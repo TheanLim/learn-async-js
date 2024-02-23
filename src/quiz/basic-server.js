@@ -37,14 +37,31 @@ const server = http.createServer((req, res) => {
     if (pathname.startsWith('/incidents/')) {
         // Extract parameters from the URL
         const [, , road, location, direction, id] = pathname.split('/');
+        console.log(road,location,direction,id);
 
         // Check if all parameters are provided
         if (road && location && direction && id) {
             // Send response with the extracted parameters
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(incidents.filter((incident) => {
-                return incident.id === `MABOS00${id}`
-            })));
+            filteredIncident = incidents.filter((incident) => {
+               return (
+                incident.road_id.toLowerCase() === road.toLowerCase() &&
+                incident.place.toLowerCase() === location.toLowerCase() &&
+                incident.direction.toLowerCase() === direction.toLowerCase() &&
+                incident.id === `MABOS00${id}`)
+            });
+
+            console.log(filteredIncident);
+
+            if (filteredIncident.length > 0){
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(filteredIncident));
+            } else {
+                res.writeHead(204, { 'Content-Type': 'text/plain' });
+                res.end('No Matching Incident');
+            }
+        } else {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Missing Paramenters in the URL');
         }
     } else {
         // If the request is for an unsupported endpoint, send a not found response
