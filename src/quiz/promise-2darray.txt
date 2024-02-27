@@ -1,1 +1,5 @@
 Explain the code execution based on the order of the messages logged in src/quiz/promise-2darray.txt.
+
+The creation of the Promise happens in the main thread, thus console.log('Sum called ...') is always called first.
+Also observe that the "Rejection" case or thread ends earlier because the "Successful" case is an N^2 operation, so it's slower.
+This actually shows that these two invocations are ran asynchronously.
