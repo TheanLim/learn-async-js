@@ -18,13 +18,18 @@ function sumARow(arr, rowIdx) {
     });
 }
 
-const promiseArr = array2D.map((_, i) => sumARow(array2D, i));
+async function calculateSum(){
+    const promiseArr = array2D.map((_, i) => sumARow(array2D, i));
 
-Promise.all(promiseArr)
-    .then((responses) => {
-        const totalSum = responses.reduce((acc, response) => acc + response, 0);
+    try {
+        const rowSums = await Promise.all(promiseArr);
+        const totalSum = rowSums.reduce((acc, response) => acc + response, 0);
         console.log('Total Sum:', totalSum);
-    })
-    .catch((error) => {
+        return 'done'
+    } catch (error){
         console.error(`Failed to fetch: ${error.message}`);
-    });
+        return 'failed';
+    }
+}
+
+calculateSum().then((status)=> console.log(status))
